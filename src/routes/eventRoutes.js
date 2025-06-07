@@ -11,5 +11,6 @@ router.get('/:id', eventController.getEventById);
 router.post('/', authMiddleware, eventController.createEvent);
 router.put('/:id', authMiddleware, eventController.updateEvent);
 router.delete('/:id', authMiddleware, eventController.deleteEvent);
+router.post('/:id/register', authMiddleware, eventController.registerForEvent);
 
 module.exports = router;

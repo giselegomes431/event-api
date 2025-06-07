@@ -120,3 +120,44 @@ exports.deleteEvent = async (req, res) => {
       .json({ error: "Evento não encontrado ou erro ao deletar." });
   }
 };
+
+exports.registerForEvent = async (req, res) => {
+  // O ID do evento vem da URL (ex: /events/ID_DO_EVENTO/register)
+  const eventId = req.params.id;
+  // O ID do usuário vem do token JWT que o middleware de autenticação validou
+  const userId = req.userId;
+
+  try {
+    // Para garantir que o usuário não está se inscrevendo em um evento que não existe
+    const event = await prisma.event.findUnique({ where: { id: eventId } });
+    if (!event) {
+      return res.status(404).json({ error: "Evento não encontrado." });
+    }
+
+    // Tenta criar a nova inscrição na tabela 'Registration'
+    const registration = await prisma.registration.create({
+      data: {
+        userId: userId,
+        eventId: eventId,
+      },
+    });
+
+    res
+      .status(201)
+      .json({ message: "Inscrição realizada com sucesso!", registration });
+  } catch (error) {
+    // O Prisma retorna o código 'P2002' quando uma constraint única falha.
+    // No nosso schema, '@@unique([eventId, userId])' causa isso.
+    if (error.code === "P2002") {
+      return res
+        .status(409)
+        .json({ error: "Você já está inscrito neste evento." }); // 409 Conflict
+    }
+
+    // Para qualquer outro tipo de erro inesperado
+    console.error("Erro ao registrar no evento:", error);
+    res
+      .status(500)
+      .json({ error: "Erro interno do servidor ao tentar se inscrever." });
+  }
+};
