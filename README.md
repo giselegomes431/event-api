@@ -55,8 +55,8 @@ Para rodar este projeto na sua máquina local, siga os passos abaixo.
 ### Passos
 1.  **Clone o repositório:**
     ```bash
-    git clone [https://github.com/SEU_USUARIO/NOME_DO_SEU_REPOSITORIO.git](https://github.com/SEU_USUARIO/NOME_DO_SEU_REPOSITORIO.git)
-    cd NOME_DO_SEU_REPOSITORIO
+    git clone https://github.com/giselegomes431/event-api.git
+    cd event-api
     ```
 2.  **Instale as dependências:**
     ```bash
